@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Agricultural Land (sq. km): Top Growth & Compare (1980–2020) + 2020 Ranking Bars</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#0b0f1c; --panel:#101632; --ink:#ffffff; --muted:#c9d2ff; --axis:#e0e6ff; --grid:#24305f;
+      --btn:#2a3a8a; --btn2:#1e285f; --danger:#ff6b6b;
+      --bar:#9fb2ff; --barEdge:#4ad97d; --barEdgeMin:#ff9d4d;
+    }
+    body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    .wrap{max-width:1100px;margin:26px auto 40px;padding:0 16px}
+    h1{margin:0 0 6px;font-size:22px;font-weight:700}
+    h2{margin:22px 0 8px;font-size:18px;font-weight:700;color:var(--ink)}
+    .sub{margin:0 0 14px;color:var(--muted)}
+    .card{background:var(--panel);border:1px solid #1a2150;border-radius:16px;padding:16px;margin-bottom:18px}
+    svg{width:100%;height:auto;display:block}
+    .axis text{fill:var(--axis);font-size:12px;font-weight:600}
+    .axis .domain,.axis line{stroke:var(--axis);opacity:.55}
+    .grid line{stroke:var(--grid)}
+    .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 12px}
+    input[type="text"]{background:#0d1435;color:#e7ecff;border:1px solid #25307a;border-radius:8px;padding:8px 10px;width:260px}
+    button{background:var(--btn);border:1px solid #3448a8;color:#e7ecff;border-radius:8px;padding:8px 12px;cursor:pointer}
+    button.secondary{background:var(--btn2);border-color:#2a3a8a}
+    .legend{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 0;color:var(--muted)}
+    .chip{display:inline-flex;align-items:center;gap:8px;background:#0d1435;border:1px solid #25307a;padding:6px 10px;border-radius:999px}
+    .chip button{background:none;border:none;color:#cfe0ff;cursor:pointer;padding:0 4px}
+    .note{color:var(--muted);margin-top:10px}
+    .tip{position:fixed;pointer-events:none;background:#111835;color:#eef2ff;border:1px solid #2a3a8a;
+         padding:8px 10px;border-radius:8px;font-size:13px;line-height:1.35;box-shadow:0 6px 20px #0006;opacity:0;
+         transition:opacity .12s ease}
+
+    .bar{fill:var(--bar)}
+    .bar.max{fill:var(--barEdge)}
+    .bar.min{fill:var(--barEdgeMin)}
+    .label{fill:var(--ink);font-size:13px;font-weight:600;dominant-baseline:middle}
+    .value{fill:var(--ink);font-size:12px;font-weight:700;dominant-baseline:middle}
+
+    #line-card{position:relative}
+    .zoom-ctrls{
+      position:absolute; right:12px; top:72px; z-index:2;
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .zoom-ctrls button{
+      width:40px; height:40px; padding:0;
+      display:grid; place-items:center;
+      border-radius:10px;
+      font-weight:800; font-size:18px;
+      line-height:1;
+      user-select:none;
+    }
+    .zoom-ctrls button.reset{font-size:12px;font-weight:700}
+
+    .pan-hint{position:absolute; right:64px; top:78px; color:var(--muted); font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Agricultural Land — Top Growth & Compare (1980–2020)</h1>
+    <p class="sub">Line chart: starts with the 5 biggest increases (1980→2020). Add any countries to compare. The bar chart below is independent.</p>
+
+    <div class="card" id="line-card">
+      <h2>Line Chart — Top Growth & Custom Compare (1980–2020)</h2>
+      <div class="controls">
+        <input id="country-input" list="country-list" type="text" placeholder="Add a country (e.g., India)" />
+        <datalist id="country-list"></datalist>
+        <button id="add-btn">Add</button>
+        <button id="clear-btn" class="secondary">Clear all</button>
+        <span id="status" class="note"></span>
+      </div>
+
+      <div class="zoom-ctrls" aria-label="Y scale zoom controls">
+        <button id="yz-in" title="Zoom in Y">+</button>
+        <button id="yz-out" title="Zoom out Y">−</button>
+        <button id="yz-reset" class="reset" title="Reset Y">100%</button>
+      </div>
+      <div class="pan-hint">Hold <strong>Shift</strong> + scroll to pan Y</div>
+
+      <div id="chips" class="legend"></div>
+      <svg id="chart" viewBox="0 0 1100 620" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+      <p id="caption" class="note"></p>
+    </div>
+
+    <div class="card" id="bar-card">
+      <h2>Bar Chart — Highest Agricultural Land in 2020 (Add up to 10)</h2>
+      <p class="sub">Starts with the Top 5 in 2020 (fallback to latest year if 2020 not present). Add/remove countries below without affecting the line chart.</p>
+      <div class="controls">
+        <input id="bar-country-input" list="bar-country-list" type="text" placeholder="Add a country to bars" />
+        <datalist id="bar-country-list"></datalist>
+        <button id="bar-add-btn">Add</button>
+        <button id="bar-clear-btn" class="secondary">Clear bars</button>
+        <span id="bar-status" class="note"></span>
+      </div>
+      <div id="bar-chips" class="legend"></div>
+      <svg id="bar-chart" viewBox="0 0 1100 640" preserveAspectRatio="xMidYMid meet" role="img"></svg>
+      <p id="bar-caption" class="note"></p>
+    </div>
+  </div>
+
+  <div id="tip" class="tip"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script>
+  (async function(){
+    const file = "Agriculture_Land_Large.csv";
+    const raw = await d3.csv(file, d3.autoType);
+
+    const NAME = raw.columns.includes("Country Name") ? "Country Name" : "Country";
+    const YEAR = "Year";
+    const VALUE = "Agricultural land (sq. km)";
+
+    const rows = raw
+      .filter(d => Number.isFinite(+d[YEAR]) && Number.isFinite(+d[VALUE]))
+      .map(d => ({ country: d[NAME], year:+d[YEAR], value:+d[VALUE] }))
+      .filter(d => d.year >= 1980 && d.year <= 2020);
+
+    const seriesByCountry = Array.from(
+      d3.group(rows, d => d.country),
+      ([country, values]) => ({ country, values: values.sort((a,b) => d3.ascending(a.year,b.year)) })
+    );
+
+    const allCountries = seriesByCountry.map(s => s.country).sort(d3.ascending);
+
+    function firstOnOrAfter(values, y){ return values.find(d => d.year >= y); }
+    function lastOnOrBefore(values, y){ for (let i = values.length - 1; i >= 0; --i) { if (values[i].year <= y) return values[i]; } return undefined; }
+
+    const growth = seriesByCountry.map(s => {
+      const start = firstOnOrAfter(s.values, 1980);
+      const end   = lastOnOrBefore(s.values, 2020);
+      const inc = (start && end) ? (end.value - start.value) : Number.NEGATIVE_INFINITY;
+      return { country: s.country, increase: inc, start, end };
+    }).filter(d => Number.isFinite(d.increase))
+      .sort((a,b) => d3.descending(a.increase, b.increase));
+
+    const top5Growth = growth.slice(0,5).map(d => d.country);
+
+    const input = document.getElementById("country-input");
+    const list = document.getElementById("country-list");
+    const addBtn = document.getElementById("add-btn");
+    const clearBtn = document.getElementById("clear-btn");
+    const chips = document.getElementById("chips");
+    const status = document.getElementById("status");
+
+    list.innerHTML = allCountries.map(c => `<option value="${c}">`).join("");
+
+    let selected = new Set(top5Growth);
+
+    const svg = d3.select("#chart");
+    const { width, height } = svg.node().viewBox.baseVal;
+    const margin = { top: 24, right: 220, bottom: 52, left: 70 };
+    const innerW = width - margin.left - margin.right;
+    const innerH = height - margin.top - margin.bottom;
+
+    const x = d3.scaleLinear().domain([1980, 2020]).range([0, innerW]).nice();
+
+    const globalYMax = d3.max(seriesByCountry, s => d3.max(s.values, d => d.value));
+
+    let ySpan  = globalYMax;                 
+    let yStart = 0;                          
+    const minSpan = Math.max(1, globalYMax / 1e4); 
+
+    const y = d3.scaleLinear()
+      .domain([yStart, yStart + ySpan]).nice()
+      .range([innerH, 0]);
+
+    const color = d3.scaleOrdinal(d3.schemeTableau10).domain(allCountries);
+
+    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+    g.append("g").attr("class","grid")
+      .call(d3.axisTop(x).ticks(7).tickSize(-innerH).tickFormat(""))
+      .call(g => g.selectAll(".tick line").attr("stroke-opacity",0.6));
+    g.append("g").attr("class","axis x")
+      .attr("transform", `translate(0,${innerH})`)
+      .call(d3.axisBottom(x).ticks(7).tickFormat(d3.format("d")))
+      .call(g => g.append("text").attr("x", innerW).attr("y", 40).attr("text-anchor","end").attr("fill","currentColor").text("Year"));
+    const yAxisG = g.append("g").attr("class","axis y")
+      .call(d3.axisLeft(y).ticks(6).tickFormat(d3.format(",~s")))
+      .call(g => g.append("text").attr("transform","rotate(-90)").attr("x", -12).attr("y", -54).attr("text-anchor","end").attr("fill","currentColor").text("Agricultural land (sq. km)"));
+
+    let line = d3.line().x(d => x(d.year)).y(d => y(d.value));
+    const tip = d3.select("#tip");
+    const fmt = d3.format(",");
+
+    function renderLegend(){
+      chips.innerHTML = "";
+      [...selected].forEach(c => {
+        const el = document.createElement("span");
+        el.className = "chip";
+        el.style.borderColor = color(c);
+        el.innerHTML = `<span style="width:10px;height:10px;border-radius:2px;background:${color(c)};display:inline-block"></span>${c} <button title="Remove" aria-label="Remove">×</button>`;
+        el.querySelector("button").onclick = () => { selected.delete(c); render(); };
+        chips.appendChild(el);
+      });
+      status.textContent = selected.size ? `Comparing ${selected.size} countr${selected.size>1?"ies":"y"}.` : "No countries selected.";
+    }
+
+    function render(){
+      renderLegend();
+
+      const selSeries = seriesByCountry.filter(s => selected.has(s.country));
+
+      const groups = g.selectAll(".series").data(selSeries, s => s.country);
+      groups.exit().remove();
+      const groupsEnter = groups.enter().append("g").attr("class","series");
+
+      groupsEnter.append("path");
+      const paths = groupsEnter.merge(groups).select("path");
+      paths.attr("fill","none").attr("stroke", s => color(s.country)).attr("stroke-width", 2.4)
+           .attr("stroke-linejoin","round").attr("stroke-linecap","round").attr("d", s => line(s.values));
+
+      groupsEnter.append("text");
+      const labels = groupsEnter.merge(groups).select("text");
+      labels.attr("x", s => x(s.values[s.values.length-1].year) + 6)
+            .attr("y", s => y(s.values[s.values.length-1].value))
+            .attr("fill", s => color(s.country)).attr("font-size", 12).attr("dominant-baseline", "middle")
+            .text(s => s.country);
+
+      const pts = groupsEnter.merge(groups)
+        .selectAll("circle")
+        .data(s => s.values.filter((_,i) => i % 2 === 0).map(v => ({...v, country:s.country})), d => d.country + "-" + d.year);
+
+      pts.join(
+        enter => enter.append("circle")
+                      .attr("r", 2.5).attr("fill", d => color(d.country))
+                      .attr("cx", d => x(d.year)).attr("cy", d => y(d.value))
+                      .on("mousemove", (event,d) => {
+                        tip.style("opacity",1)
+                           .html(`<strong>${d.country}</strong><br/>${d.year}: ${fmt(d.value)} sq. km`)
+                           .style("left", (event.pageX+12)+"px").style("top",  (event.pageY+12)+"px");
+                      })
+                      .on("mouseleave", () => tip.style("opacity",0)),
+        update => update.attr("cx", d => x(d.year)).attr("cy", d => y(d.value)),
+        exit => exit.remove()
+      );
+
+      const top5GrowthList = growth.slice(0, 5).map(d => d.country).join(", ");
+      const worst5GrowthList = growth.slice(-5).reverse().map(d => d.country).join(", ");
+      document.getElementById("caption").innerHTML = `
+        <strong>Top 5 increases (1980→2020):</strong> ${top5GrowthList}<br>
+        <strong>Worst 5 changes (1980→2020):</strong> ${worst5GrowthList}`;
+    }
+
+    render();
+
+    function clampPan(){
+      const maxStart = Math.max(0, globalYMax - ySpan);
+      yStart = Math.max(0, Math.min(yStart, maxStart));
+    }
+
+    function applyYScale(animated=true){
+      clampPan();
+      y.domain([yStart, yStart + ySpan]).nice();
+      line = line.y(d => y(d.value));
+
+      const t = animated ? g.transition().duration(300) : g;
+      yAxisG.transition(t).call(d3.axisLeft(y).ticks(6).tickFormat(d3.format(",~s")));
+
+      g.selectAll(".series path").transition(t).attr("d", s => line(s.values));
+      g.selectAll(".series circle").transition(t).attr("cy", d => y(d.value));
+      g.selectAll(".series text").transition(t)
+        .attr("y", s => y(s.values[s.values.length-1].value));
+    }
+
+    const zoomInBtn  = document.getElementById("yz-in");
+    const zoomOutBtn = document.getElementById("yz-out");
+    const resetBtn   = document.getElementById("yz-reset");
+
+    zoomInBtn.onclick = () => {
+      ySpan = Math.max(minSpan, ySpan * 0.6); 
+      applyYScale(true);
+    };
+    zoomOutBtn.onclick = () => {
+      ySpan = Math.min(globalYMax, ySpan / 0.6); 
+      applyYScale(true);
+    };
+    resetBtn.onclick = () => {
+      ySpan = globalYMax;
+      yStart = 0;
+      applyYScale(true);
+    };
+
+    const chartEl = svg.node();
+    chartEl.addEventListener("wheel", (e) => {
+      if (!e.shiftKey) return;            
+      e.preventDefault();                 
+      const dir = e.deltaY > 0 ? 1 : -1;  
+      const step = ySpan * 0.15;          
+      yStart += dir * step;
+      applyYScale(true);
+    }, { passive: false });
+
+    addBtn.onclick = () => {
+      const name = (input.value || "").trim();
+      if (!name) return;
+      if (!allCountries.includes(name)) { alert("Country not found. Use the suggestions list."); return; }
+      selected.add(name);
+      input.value = "";
+      render();
+      applyYScale(false);
+    };
+    clearBtn.onclick = () => { selected.clear(); render(); applyYScale(false); };
+    input.addEventListener("keydown", e => { if (e.key === "Enter") addBtn.click(); });
+
+    const barInput = document.getElementById("bar-country-input");
+    const barList  = document.getElementById("bar-country-list");
+    const barAddBtn = document.getElementById("bar-add-btn");
+    const barClearBtn = document.getElementById("bar-clear-btn");
+    const barChips = document.getElementById("bar-chips");
+    const barStatus = document.getElementById("bar-status");
+    const barSvg = d3.select("#bar-chart");
+
+    barList.innerHTML = allCountries.map(c => `<option value="${c}">`).join("");
+
+    const yearsExtent = d3.extent(rows, d => d.year);
+    const latestYear = Math.min(2020, yearsExtent[1]) || yearsExtent[1];
+
+    const latestSlice = rows.filter(d => d.year === latestYear);
+    const rank2020 = latestSlice.slice().sort((a,b) => d3.descending(a.value, b.value));
+    const top5_2020 = rank2020.slice(0,5).map(d => d.country);
+
+    let barSelected = new Set(top5_2020);
+    const barMaxSelections = 10;
+
+    function renderBarLegend(){
+      barChips.innerHTML = "";
+      [...barSelected].forEach(c => {
+        const el = document.createElement("span");
+        el.className = "chip";
+        el.innerHTML = `${c} <button title="Remove" aria-label="Remove">×</button>`;
+        el.querySelector("button").onclick = () => { barSelected.delete(c); renderBars(); };
+        barChips.appendChild(el);
+      });
+      barStatus.textContent = barSelected.size ? `Comparing ${barSelected.size} / ${barMaxSelections} countries.` : `No bars selected.`;
+    }
+
+    function renderBars(){
+      renderBarLegend();
+
+      let data = latestSlice.filter(d => barSelected.has(d.country));
+      data.sort((a,b) => d3.descending(a.value, b.value));
+
+      const { width: bw } = barSvg.node().viewBox.baseVal;
+      const margin = { top: 24, right: 220, bottom: 52, left: 280 };
+      const innerW = bw - margin.left - margin.right;
+
+      const rowH = 26;
+      const innerH = Math.max(220, data.length * rowH + 10);
+      const fullH = innerH + margin.top + margin.bottom;
+      barSvg.attr("viewBox", `0 0 ${bw} ${fullH}`);
+
+      const g = barSvg.selectAll("g.root").data([null]).join("g").attr("class","root")
+                      .attr("transform", `translate(${margin.left},${margin.top})`);
+      g.selectAll("*").remove();
+
+      const x = d3.scaleLinear().domain([0, d3.max(data, d => d.value) || 1]).nice().range([0, innerW]);
+      const yb = d3.scaleBand().domain(data.map(d => d.country)).range([0, innerH]).padding(0.2);
+
+      g.append("g").attr("class","grid")
+        .call(d3.axisTop(x).ticks(6).tickSize(-innerH).tickFormat(""))
+        .call(g => g.selectAll(".tick line").attr("stroke-opacity",0.6));
+
+      const globalMax = rank2020[0];
+      const globalMin = rank2020[rank2020.length - 1];
+
+      const bars = g.selectAll(".bar")
+        .data(data, d => d.country)
+        .join("rect")
+        .attr("class", d => {
+          let cls = "bar";
+          if (d.country === globalMax.country) cls += " max";
+          if (d.country === globalMin.country) cls += " min";
+          return cls;
+        })
+        .attr("x", 0)
+        .attr("y", d => yb(d.country))
+        .attr("width", d => x(d.value))
+        .attr("height", yb.bandwidth());
+
+      const numFmt = d3.format(",");
+      const axisFmt = d3.format(",~s");
+      const tip = d3.select("#tip");
+
+      const insideCutoff = 90;
+      g.selectAll(".value")
+        .data(data)
+        .join("text")
+        .attr("class","value")
+        .attr("x", d => x(d.value) > insideCutoff ? x(d.value)-8 : x(d.value)+8)
+        .attr("y", d => yb(d.country) + yb.bandwidth()/2)
+        .attr("text-anchor", d => x(d.value) > insideCutoff ? "end" : "start")
+        .text(d => `${numFmt(d.value)} sq. km`);
+
+      g.append("g").attr("class","axis x")
+        .attr("transform", `translate(0,${innerH})`)
+        .call(d3.axisBottom(x).ticks(6).tickFormat(axisFmt))
+        .call(g => g.append("text")
+          .attr("x", innerW).attr("y", 40).attr("text-anchor","end").attr("fill","currentColor")
+          .text(`Agricultural land (sq. km) — ${latestYear}`));
+
+      g.append("g").attr("class","axis y").call(d3.axisLeft(yb).tickSize(0));
+
+      function showTip(event, d){
+        tip.style("opacity",1)
+           .html(`<strong>${d.country}</strong><br/>${numFmt(d.value)} sq. km (${latestYear})`)
+           .style("left", (event.pageX + 12) + "px")
+           .style("top",  (event.pageY + 12) + "px");
+      }
+      function hideTip(){ tip.style("opacity",0); }
+      bars.on("mousemove", showTip).on("mouseleave", hideTip);
+      g.selectAll(".label,.value").on("mousemove", (e,d) => showTip(e, d)).on("mouseleave", hideTip);
+
+      const top5List = rank2020.slice(0, 5).map(d => d.country).join(", ");
+      const bottom5List = rank2020.slice(-5).map(d => d.country).join(", ");
+
+      document.getElementById("bar-caption").innerHTML = `
+        <strong>Top 5 by ${latestYear}:</strong> ${top5List}<br>
+        <strong>Worst 5 by ${latestYear}:</strong> ${bottom5List}
+        ${barSelected.size ? `<br><strong>Selected:</strong> ${[...barSelected].join(", ")}` : ""}`;
+    }
+
+    renderBars();
+
+    barAddBtn.onclick = () => {
+      const name = (barInput.value || "").trim();
+      if (!name) return;
+      if (!allCountries.includes(name)) { alert("Country not found. Use the suggestions list."); return; }
+      if (barSelected.size >= barMaxSelections && !barSelected.has(name)) {
+        alert(`You can compare at most ${barMaxSelections} countries in the bar chart.`);
+        return;
+      }
+      barSelected.add(name);
+      barInput.value = "";
+      renderBars();
+    };
+    barClearBtn.onclick = () => { barSelected.clear(); renderBars(); };
+    barInput.addEventListener("keydown", e => { if (e.key === "Enter") barAddBtn.click(); });
+  })();
+  </script>
+</body>
+</html>
