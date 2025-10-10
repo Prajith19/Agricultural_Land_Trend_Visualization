@@ -1,140 +1,128 @@
 # Agricultural_Land_Trend_Visualization
 
-Interactive **D3.js** visualization of **Agricultural land (sq. km)** across countries.
-It highlights top growth from **1980–2020** with an add-to-compare **line chart** (with **Y-axis zoom + vertical pan**) and an independent **bar chart** showing the largest agricultural-land holders in **2020**.
+Interactive D3.js visualization of agricultural land area (sq. km) across countries.
+It highlights top growth from 1980–2020 with an add-to-compare line chart (now with **Y-axis zoom + vertical pan**) and an **independent bar chart** showing the largest agricultural land holders in 2020.
 
 ---
 
 ## Why this project?
 
-Agricultural land is a key indicator of land use and sustainability. This tool makes it easy to:
-
-* Explore long-term trends
-* Compare countries interactively
-* Zoom/pan the Y-axis to inspect both very large and smaller countries without losing detail
+Agricultural land is a key indicator of land use and sustainability. This tool makes it easy to explore long-term trends, compare countries, and zoom/pan the scale to inspect both very large and smaller countries without losing detail.
 
 ---
 
 ## Features
 
 * **Line chart (1980–2020):** starts with the 5 biggest growth countries; add any country to compare.
-* **Y-axis zoom & pan:** buttons for zoom **+ / − / 100%**, plus **Shift + Mouse-wheel** to pan vertically through huge values.
-* **Ranking bar chart (2020):** begins with top 5 countries; add up to **10** to compare (independent from the line chart).
-* **Tooltips & labels**, responsive SVG, dark UI.
-* **Vanilla setup:** No bundlers; just open via a simple static server.
+* **Y-axis zoom & pan:** buttons for zoom in / out / reset, plus **Shift + scroll** to pan vertically through huge values.
+* **Ranking bar chart (2020):** begins with top 5 countries; add up to 10 to compare (**independent** from the line chart).
+* **Tooltips & labels** for precise values, **responsive SVG**, **dark UI**.
+* **Vanilla stack:** D3 v7 + HTML/CSS/JS (no build step).
 
 ---
 
 ## Data Source
 
-* **World Development Indicators (WDI)** by **The World Bank**
-* **Indicator:** *Agricultural land (sq. km)*
-* **Code:** `AG.LND.AGRI.K2`
-* **Catalog:** *World Development Indicators* (WDI)
+* **Catalog:** World Development Indicators (WDI) — The World Bank
+  Link: [https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators](https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators)
+* **Indicator used:** Agricultural land (sq. km).
+* **Temporal focus:** 1980–2020 for the line chart; bar chart uses 2020 (or latest available ≤ 2020 as a fallback).
 
-> WDI updates periodically; you can refresh the CSV by re-downloading the dataset and rerunning the prep script.
+> WDI updates periodically; re-run the prep script to refresh the CSV when new data is released.
 
 ---
 
-## Get the Dataset & Build `Agriculture_Land_Large.csv`
+## Getting the Dataset & Preparing the CSV (Step-by-Step)
 
-1. **Download WDI (World Development Indicators)**
+1. **Download WDI CSV package**
 
-   * Go to the official World Bank *World Development Indicators* catalog page.
-   * Click **Download Data** to get the full ZIP.
+   * Go to the WDI catalog page:
+     [https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators](https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators)
+   * Download the **CSV** package (a zip archive).
 
-2. **Extract the ZIP**
+2. **Extract the archive**
 
-   * After unzipping, you’ll see several folders/files.
-   * Locate the folder named **`WDICSV`** .
+   * Unzip the downloaded file.
+   * Inside, you will see multiple files. **Locate** the file named **`WDICSV.csv`** (this is the *only* file you need).
 
-3. **Organize files**
+3. **Create a working folder**
 
-   * Create a working folder, e.g., `agri-land-data/`.
-   * Move the entire **`WDICSV`** folder into this working folder.
-   * Put **`DataFormation.py`** in the **same** working folder:
+   * Make a new folder (e.g., `wdi-agri-land/`).
+   * Copy **`WDICSV.csv`** into this folder.
+   * Place **`DataFormation.py`** in the **same** folder.
 
-4. **(First time only) Install Python deps**
+4. **Run the data formation script**
 
-   ```bash
-   # Optional virtual env
-   python3 -m venv .venv
-   source .venv/bin/activate      # Windows: .venv\Scripts\activate
+   * Requirements: Python 3.9+ and `pandas` installed.
+   * From the folder containing both files, run:
 
-   pip install -U pandas numpy
-   ```
+     ```bash
+     python3 DataFormation.py
+     ```
+   * Output: the script will generate **`Agriculture_Land_Large.csv`** in the **same** folder.
 
-5. **Run the preparation script**
+5. **Move assets for the app**
 
-   ```bash
-   cd agri-land-data
-   python DataFormation.py
-   ```
+   * Ensure **`Agriculture_Land_Large.csv`** is in the same directory as **`index.html`** (either keep everything in one folder or copy the CSV to the folder where `index.html` lives).
 
-   * The script reads `WDICSV.csv`, filters the **AG.LND.AGRI.K2** indicator, cleans/reshapes data, and limits the timeline to **1980–2020**.
-   * On success, it writes **`Agriculture_Land_Large.csv`** to the **same** folder as `DataFormation.py`.
-
-6. **Move the final CSV next to the web app**
-
-   * Copy or move `Agriculture_Land_Large.csv` into the same directory as your `index.html`.
+**That’s it — the visualization is now ready to run.**
 
 ---
 
 
-> Ensure **`Agriculture_Land_Large.csv`** is in the **same folder** as `index.html`.
+> If you keep everything flat (same directory), that also works. Just be sure `index.html` and `Agriculture_Land_Large.csv` end up together.
 
 ---
 
 ## Run Locally
 
-Browsers restrict local file access; serve via a simple static server:
+Because browsers restrict local file access, serve via a simple static server:
 
 ```bash
-# Option A: Python
+# Python
 python3 -m http.server 8000
 
-# Option B: Node
+# or Node
 npx http-server -p 8000
 ```
 
 Then open: **[http://localhost:8000](http://localhost:8000)**
+Ensure **`Agriculture_Land_Large.csv`** is in the **same directory** as `index.html`.
 
 ---
 
 ## How to Use
 
-* **Add countries** with the country input above each chart.
-* **Line chart Y-zoom:** click **+** / **−** / **100%**.
+* **Add countries** with the input above each chart.
+* **Line chart Y-zoom:** click **+ / − / 100%**.
 * **Line chart Y-pan:** hold **Shift** and **scroll** over the chart area.
-* **Bars (2020):** add up to **10** countries (independent of the line selection).
-* **Tooltips:** hover to see exact values.
+* **Bar chart (2020):** add up to **10 countries** to compare (independent of the line selection).
+* **Tooltips** show precise values on hover.
 
 ---
 
 ## Data Preparation (what the script does)
 
-* Extracts the **Agricultural land (sq. km)** indicator from WDI (`AG.LND.AGRI.K2`).
-* Reshapes to a tidy format with columns:
+* Extracts the **Agricultural land (sq. km)** indicator from the full WDI table.
+* Filters & reshapes to a tidy format with columns:
   `Country Name`, `Country Code`, `Indicator Name`, `Indicator Code`, `Year`, `Agricultural land (sq. km)`.
-* Cleans numeric fields and drops rows with missing/non-numeric values for the selected years.
-* **Temporal focus:** 1980–2020 for the line chart;
-  the bar chart uses **2020** or **latest available ≤ 2020** as a fallback.
-* Exports **`Agriculture_Land_Large.csv`** (consumed by the web app).
+* Limits the line chart time window to **1980–2020** (bar chart uses **2020** or latest ≤ 2020).
+* Cleans numeric fields and drops missing/non-numeric values for the selected years.
+* Exports **`Agriculture_Land_Large.csv`** consumed by the D3 app.
 
 ---
 
 ## Tech Stack
 
 * **D3.js v7** (SVG, scales, axes, transitions)
-* **Vanilla HTML/CSS/JS** (no build step)
-* **Python + pandas** (one-time data formation)
+* **Vanilla HTML/CSS/JS** (no build step, easy to host)
 
 ---
 
 ## Acknowledgments & Data License
 
-* Data © **The World Bank** (*World Development Indicators*).
-* Please follow the World Bank’s data terms and attribution guidelines when using or sharing results.
+* **Data © The World Bank (World Development Indicators).**
+  Please follow the World Bank’s data terms and attribution guidelines when using or sharing results.
+* Catalog link: [https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators](https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators)
 
 ---
-
