@@ -1,4 +1,3 @@
-````md
 # Agricultural_Land_Trend_Visualization
 
 <p align="left">
@@ -70,7 +69,6 @@ Agricultural land is a key indicator of land use and sustainability. This tool m
    Requirements: Python 3.9+ and `pandas`.  
    ```bash
    python3 DataFormation.py
-````
 
 Output: **`Agriculture_Land_Large.csv`** in the same folder.
 
