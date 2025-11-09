@@ -16,15 +16,6 @@ It highlights top growth from **1980–2020** with an add-to-compare line chart 
 - Amplify URL: https://staging.dw77vepfrd618.amplifyapp.com/  
 - Short link: **https://bit.ly/agrilandviz**
 
-<!-- QR code (clickable) -->
-<p align="left">
-  <a href="https://bit.ly/agrilandviz">
-    <img src="assets/qr-agrilandviz.png" alt="QR: bit.ly/agrilandviz" width="180" />
-  </a>
-  <br/>
-  <sub>Scan or click to open: <a href="https://bit.ly/agrilandviz">bit.ly/agrilandviz</a></sub>
-</p>
-
 ---
 
 ## Why this project?
