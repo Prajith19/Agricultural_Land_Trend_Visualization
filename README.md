@@ -1,128 +1,164 @@
-# Agricultural_Land_Trend_Visualization
+Agricultural_Land_Trend_Visualization
 
 Interactive D3.js visualization of agricultural land area (sq. km) across countries.
-It highlights top growth from 1980–2020 with an add-to-compare line chart (now with **Y-axis zoom + vertical pan**) and an **independent bar chart** showing the largest agricultural land holders in 2020.
+It highlights top growth from 1980–2020 with an add-to-compare line chart (now with Y-axis zoom + vertical pan) and an independent bar chart showing the largest agricultural land holders in 2020.
 
----
+Live demo:
 
-## Why this project?
+Amplify URL: https://staging.dw77vepfrd618.amplifyapp.com/
+
+Short link: https://bit.ly/agrilandviz
+
+Why this project?
 
 Agricultural land is a key indicator of land use and sustainability. This tool makes it easy to explore long-term trends, compare countries, and zoom/pan the scale to inspect both very large and smaller countries without losing detail.
 
----
+Features
 
-## Features
+Line chart (1980–2020): starts with the 5 biggest growth countries; add any country to compare.
 
-* **Line chart (1980–2020):** starts with the 5 biggest growth countries; add any country to compare.
-* **Y-axis zoom & pan:** buttons for zoom in / out / reset, plus **Shift + scroll** to pan vertically through huge values.
-* **Ranking bar chart (2020):** begins with top 5 countries; add up to 10 to compare (**independent** from the line chart).
-* **Tooltips & labels** for precise values, **responsive SVG**, **dark UI**.
-* **Vanilla stack:** D3 v7 + HTML/CSS/JS (no build step).
+Y-axis zoom & pan: buttons for zoom in / out / reset, plus Shift + scroll to pan vertically through huge values.
 
----
+Ranking bar chart (2020): begins with top 5 countries; add up to 10 to compare (independent from the line chart).
 
-## Data Source
+Tooltips & labels for precise values, responsive SVG, dark UI.
 
-* **Catalog:** World Development Indicators (WDI) — The World Bank
-  Link: [https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators](https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators)
-* **Indicator used:** Agricultural land (sq. km).
-* **Temporal focus:** 1980–2020 for the line chart; bar chart uses 2020 (or latest available ≤ 2020 as a fallback).
+Vanilla stack: D3 v7 + HTML/CSS/JS (no build step).
 
-> WDI updates periodically; re-run the prep script to refresh the CSV when new data is released.
+Data Source
 
----
+Catalog: World Development Indicators (WDI) — The World Bank
+Link: https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators
 
-## Getting the Dataset & Preparing the CSV (Step-by-Step)
+Indicator used: Agricultural land (sq. km).
 
-1. **Download WDI CSV package**
+Temporal focus: 1980–2020 for the line chart; bar chart uses 2020 (or latest available ≤ 2020 as a fallback).
 
-   * Go to the WDI catalog page:
-     [https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators](https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators)
-   * Download the **CSV** package (a zip archive).
+WDI updates periodically; re-run the prep script to refresh the CSV when new data is released.
 
-2. **Extract the archive**
+Getting the Dataset & Preparing the CSV (Step-by-Step)
 
-   * Unzip the downloaded file.
-   * Inside, you will see multiple files. **Locate** the file named **`WDICSV.csv`** (this is the *only* file you need).
+Download WDI CSV package
 
-3. **Create a working folder**
+Go to the WDI catalog page above and download the CSV archive.
 
-   * Make a new folder (e.g., `wdi-agri-land/`).
-   * Copy **`WDICSV.csv`** into this folder.
-   * Place **`DataFormation.py`** in the **same** folder.
+Extract the archive
 
-4. **Run the data formation script**
+Unzip it and locate WDICSV.csv (this is the only file you need).
 
-   * Requirements: Python 3.9+ and `pandas` installed.
-   * From the folder containing both files, run:
+Create a working folder
 
-     ```bash
-     python3 DataFormation.py
-     ```
-   * Output: the script will generate **`Agriculture_Land_Large.csv`** in the **same** folder.
+Make a folder (e.g., wdi-agri-land/), copy WDICSV.csv into it, and place DataFormation.py there too.
 
-5. **Move assets for the app**
+Run the data formation script
 
-   * Ensure **`Agriculture_Land_Large.csv`** is in the same directory as **`index.html`** (either keep everything in one folder or copy the CSV to the folder where `index.html` lives).
+Requirements: Python 3.9+ and pandas.
 
-**That’s it — the visualization is now ready to run.**
+Run:
 
----
+python3 DataFormation.py
 
 
-> If you keep everything flat (same directory), that also works. Just be sure `index.html` and `Agriculture_Land_Large.csv` end up together.
+Output: Agriculture_Land_Large.csv in the same folder.
 
----
+Move assets for the app
 
-## Run Locally
+Ensure Agriculture_Land_Large.csv is deployed with the app and accessible at
+DataSets/Agriculture_Land_Large.csv (i.e., next to index.html inside a DataSets/ folder).
 
-Because browsers restrict local file access, serve via a simple static server:
+Run Locally
 
-```bash
+Serve via a simple static server (browsers block file:// CSV requests):
+
 # Python
 python3 -m http.server 8000
 
 # or Node
 npx http-server -p 8000
-```
 
-Then open: **[http://localhost:8000](http://localhost:8000)**
-Ensure **`Agriculture_Land_Large.csv`** is in the **same directory** as `index.html`.
 
----
+Then open: http://localhost:8000
 
-## How to Use
+Make sure DataSets/Agriculture_Land_Large.csv is in the expected location relative to index.html.
 
-* **Add countries** with the input above each chart.
-* **Line chart Y-zoom:** click **+ / − / 100%**.
-* **Line chart Y-pan:** hold **Shift** and **scroll** over the chart area.
-* **Bar chart (2020):** add up to **10 countries** to compare (independent of the line selection).
-* **Tooltips** show precise values on hover.
+Hosting & Deployment (AWS Amplify + short URL)
 
----
+This project is hosted on AWS Amplify (Drag-and-Drop Hosting) and shortened with Bitly.
 
-## Data Preparation (what the script does)
+A. Deploy steps (what I used)
 
-* Extracts the **Agricultural land (sq. km)** indicator from the full WDI table.
-* Filters & reshapes to a tidy format with columns:
-  `Country Name`, `Country Code`, `Indicator Name`, `Indicator Code`, `Year`, `Agricultural land (sq. km)`.
-* Limits the line chart time window to **1980–2020** (bar chart uses **2020** or latest ≤ 2020).
-* Cleans numeric fields and drops missing/non-numeric values for the selected years.
-* Exports **`Agriculture_Land_Large.csv`** consumed by the D3 app.
+Prepare a folder (e.g., site/) containing:
 
----
+site/
+  index.html
+  DataSets/
+    Agriculture_Land_Large.csv
+  (any other assets referenced by index.html)
 
-## Tech Stack
 
-* **D3.js v7** (SVG, scales, axes, transitions)
-* **Vanilla HTML/CSS/JS** (no build step, easy to host)
+Zip the contents of site/ (so the ZIP root has index.html, not site/index.html).
 
----
+AWS Console → Amplify Hosting → Host your web app → Deploy without Git provider → Drag & drop the ZIP.
 
-## Acknowledgments & Data License
+Wait for status Deployed. The app is now live at a URL like
+https://staging.dw77vepfrd618.amplifyapp.com/.
 
-* **Data © The World Bank (World Development Indicators).**
-  Please follow the World Bank’s data terms and attribution guidelines when using or sharing results.
-* Catalog link: [https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators](https://datacatalog.worldbank.org/search/dataset/0037712/World-Development-Indicators)
+Notes:
 
----
+If you change files later, upload a new ZIP in the same Amplify environment.
+
+If CSV paths 404, verify DataSets/Agriculture_Land_Large.csv exists in the deployed bundle.
+
+B. Short link with Bitly
+
+Create a Bitly account (free).
+
+Create new link → Long URL: https://staging.dw77vepfrd618.amplifyapp.com/.
+
+Set a custom back-half: agrilandviz → Save.
+Final short URL: https://bit.ly/agrilandviz
+.
+
+If agrilandviz is taken, Bitly will ask for a different back-half.
+
+C. Optional: move to your own domain later
+
+Buy a domain in Route 53 or use your existing registrar.
+
+In Amplify → Domain management → Add domain, map yourdomain.com (and www) to this app.
+Amplify will provision HTTPS automatically if the domain is in Route 53.
+
+How to Use
+
+Add countries with the input above each chart.
+
+Line chart Y-zoom: + / − / 100% buttons.
+
+Line chart Y-pan: hold Shift and scroll.
+
+Bar chart (2020): add up to 10 countries; selection is independent of the line chart.
+
+Tooltips show precise values on hover.
+
+Data Preparation (what the script does)
+
+Extracts the Agricultural land (sq. km) indicator from WDI.
+
+Reshapes to tidy columns:
+Country Name, Country Code, Indicator Name, Indicator Code, Year, Agricultural land (sq. km).
+
+Filters 1980–2020 for the line chart; bar chart uses 2020 (or latest ≤ 2020).
+
+Cleans numeric fields and removes missing rows.
+
+Outputs Agriculture_Land_Large.csv consumed by the D3 app.
+
+Tech Stack
+
+D3.js v7
+
+Vanilla HTML/CSS/JS
+
+Acknowledgments & Data License
+
+Data © The World Bank (World Development Indicators) — follow World Bank data terms and attribution.
