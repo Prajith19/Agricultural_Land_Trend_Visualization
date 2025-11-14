@@ -1,9 +1,5 @@
 # Agricultural_Land_Trend_Visualization
 
-<p align="left">
-  <a href="https://bit.ly/agrilandviz">
-    <img alt="Live Demo" src="https://img.shields.io/badge/Live%20Demo-Open%20App-2ea44f?logo=google-chrome&logoColor=white">
-  </a>
   <a href="https://staging.dw77vepfrd618.amplifyapp.com/">
     <img alt="Hosted on AWS Amplify" src="https://img.shields.io/badge/Hosted%20on-AWS%20Amplify-FF9900?logo=awsamplify&logoColor=white">
   </a>
@@ -14,7 +10,6 @@ It highlights top growth from **1980–2020** with an add-to-compare line chart 
 
 **Live demo**
 - Amplify URL: https://staging.dw77vepfrd618.amplifyapp.com/  
-- Short link: **https://bit.ly/agrilandviz**
 
 ---
 
