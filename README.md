@@ -154,4 +154,3 @@ This project is hosted on **AWS Amplify (Drag-and-Drop Hosting)** and shortened 
 
 * **Data © The World Bank (World Development Indicators)** — follow World Bank data terms and attribution.
 ```
-```
